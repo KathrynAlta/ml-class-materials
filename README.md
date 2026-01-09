@@ -11,8 +11,8 @@ Pronouns: he, him, his
 * Office hours: any time via zoom, arrange by email
 * **Zoom 944 3049 7046**, as needed and for office hours
 * Text: [James et al. 2021](https://www.statlearning.com/) (2023 corrected version; both R and Python editions)
-* [Google Drive]() (TBA): anything not open access, audio and zoom recording links, collaborative notes etc
-* [Class recordings]() (TBA): password required, by request
+* [Google Drive]() (TBA): anything not open access, collaborative notes etc
+* [Class recordings](https://www.dropbox.com/scl/fo/5qwqog14nxo53tgwc8ee2/AF-T8pBUjLwBkYxCgryFiSI?rlkey=tspkrv94e29sbhtfl3n6q23ce&st=vhsxcjvs&dl=0): password required, by request
 * [Piazza]() (TBA): help, questions, discussion
 * [Zotero library](https://www.zotero.org/groups/5444970/machine_learning_ecology_2024/library): collection of papers
 
