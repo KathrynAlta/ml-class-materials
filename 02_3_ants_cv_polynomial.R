@@ -23,12 +23,12 @@ head(ants)
 
 #' Forest ant data:
 
-forest_ants <- ants |> 
-    filter(habitat=="forest")
+forest_ants <- ants %>% # other pipe operator is |>
+    filter(habitat=="forest") # grab only the rows when the "habitat" column is equal to "forest" 
 
-forest_ants |>
+forest_ants %>%
     ggplot() +
-    geom_point(aes(x=latitude, y=richness)) +
+    geom_point(aes(x=latitude, y=richness)) + # create a visual object known as a geom, asesthetics 
     ylim(0,20)
 
 #' Here's one way we could code a 3rd order polynomial by first creating new
@@ -36,10 +36,12 @@ forest_ants |>
 #' model formula syntax to train the model by minimizing the SSQ with the
 #' function `lm`.
 
-forest_ants$latitude_2 <- forest_ants$latitude ^ 2
+forest_ants$latitude_2 <- forest_ants$latitude ^ 2 # forming new columns for ^2
 forest_ants$latitude_3 <- forest_ants$latitude ^ 3
 head(forest_ants)
-lm(richness ~ latitude + latitude_2 + latitude_3, data=forest_ants)
+lm(richness ~ latitude + latitude_2 + latitude_3, data=forest_ants) #fitting a training algorithm to the data 
+        # giving coefficients that are associated with each term 
+        # intercept is beta 0 
 
 #' A model formula provides a shorthand notation for (mostly) linear models,
 #' e.g. `y ~ x + z` is shorthand for the model:
@@ -52,7 +54,8 @@ lm(richness ~ latitude + latitude_2 + latitude_3, data=forest_ants)
 #' Here's another way to code the same model that eliminates the need to create
 #' new variables for higher order terms.
 
-lm(richness ~ latitude + I(latitude^2) + I(latitude^3), data=forest_ants)
+lm(richness ~ latitude + I(latitude^2) + I(latitude^3), data=forest_ants) # instead of making new columns for polynomial terms can do the calculations within the specificiations of the linear model 
+        # I is the identitiy function, ^ means something special in lm syntax so it needs to be in the I, take this literally 
 
 #' The `I()` function ensures that `^` is not interpreted as model formula
 #' syntax. See `?formula` for more details about model formulae.
@@ -60,11 +63,15 @@ lm(richness ~ latitude + I(latitude^2) + I(latitude^3), data=forest_ants)
 #' An even more convenient way uses the function `poly()`, which creates a
 #' matrix of the polynomial terms.
 
-poly(forest_ants$latitude, degree=3, raw=TRUE)
+poly(forest_ants$latitude, degree=3, raw=TRUE) # actually do this using the funtion poly, this is encapsulating the model alg in a function
+        # inputs are (data we want to predict from, which degree of polynomial aka tuning)
+        # not really interested in parameters, we want to control how flexible is the model 
+        # raw = true means this is a form of hte algorthm that is the same as 
+        # poly makes the polynomial terms for us 
 
 #' We can use this directly within a model formula
 
-lm(richness ~ poly(latitude, degree=3, raw=TRUE), data=forest_ants)
+lm(richness ~ poly(latitude, degree=3, raw=TRUE), data=forest_ants) # problem that x^2 is highly correlated with x^3
 
 #' A potential problem with polynomial models is that the higher order terms can
 #' become almost perfectly correlated with one another, leading to models where
@@ -76,14 +83,14 @@ lm(richness ~ poly(latitude, degree=3, raw=TRUE), data=forest_ants)
 #' correlations.
 
 lm(richness ~ poly(latitude, degree=4, raw=TRUE), data=forest_ants)
-lm(richness ~ poly(latitude, degree=5, raw=TRUE), data=forest_ants)
-cor(poly(forest_ants$latitude, degree=5, raw=TRUE))
+lm(richness ~ poly(latitude, degree=5, raw=TRUE), data=forest_ants) # run into a problem that we can't fit a polynomial fit, 4 and 5 are same model essentially, run out of information 
+cor(poly(forest_ants$latitude, degree=5, raw=TRUE)) # limited in its degree of flexibility, depends on the information content of the data (bigger dataset you could get to higher polynomials)
 
 #' This problem can be markedly reduced by using orthogonal polynomials, which
 #' remove the correlation among the polynomial terms. Orthogonal polynomials are
 #' the default type for `poly()`.
 
-lm(richness ~ poly(latitude, degree=5), data=forest_ants)
+lm(richness ~ poly(latitude, degree=5), data=forest_ants) # can re-parameterize the model into an othogonal polynomial, allows seperate, remove raw= TRUE, default is orthogonal param 
 cor(poly(forest_ants$latitude, degree=5))
 
 #' Orthogonal polynomials give the same predictions as the raw polynomials. It's
@@ -99,7 +106,7 @@ cor(poly(forest_ants$latitude, degree=5))
 #' polynomial. We can get up to order 16, after which we can no longer form
 #' orthogonal polynomials.
 
-order <- 4 #integer
+order <- 3 #integer     # flexibility comes through changing the order of the model 
 poly_trained <- lm(richness ~ poly(latitude, order), data=forest_ants)
 grid_latitude  <- seq(min(forest_ants$latitude), max(forest_ants$latitude), length.out=201)
 nd <- data.frame(latitude=grid_latitude)
@@ -110,8 +117,8 @@ ggplot(data=NULL, aes(x=latitude, y=richness)) +
     geom_point(data=forest_ants) +
     geom_line(data=preds) +
     coord_cartesian(ylim=c(0,20)) +
-    labs(title=paste("Polynomial order", order))
-
+    labs(title=paste("Polynomial order", order)) # fit model to the data and have a look at what the 
+        # if you increase order a ton then you get more and more wiggles 
 
 #' Use `predict` to ask for predictions from the trained polynomial model. For
 #' example, here we are asking for the prediction at latitude 43.2 and we find
