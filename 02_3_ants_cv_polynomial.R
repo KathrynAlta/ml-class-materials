@@ -12,8 +12,8 @@
 #' most accurate predictions?
 
 #+ results=FALSE, message=FALSE, warning=FALSE
-library(ggplot2)
-library(dplyr)
+library(ggplot2) # for data visualization 
+library(dplyr) # for data manipulation 
 library(tidyr) #for pivot_longer()
 
 #' Ant data:
